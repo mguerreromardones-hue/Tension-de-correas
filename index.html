@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROMAIN - Calculador de Tensión de Correas</title>
+<style>
+:root{--navy:#073b66;--blue:#0b5f98;--light:#eaf4fb;--line:#b9cfdf;--ok:#dff3df;--warn:#fff3c9;--bad:#ffd9d9;--text:#17212b}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#f3f6f8}
+header{background:var(--navy);color:white;padding:18px 20px} header h1{margin:0;font-size:24px} header p{margin:5px 0 0;opacity:.9}
+main{max-width:1150px;margin:auto;padding:16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card{background:white;border:1px solid #d9e3ea;border-radius:12px;padding:16px}
+h2{font-size:18px;color:var(--navy);margin:0 0 12px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{font-size:13px;font-weight:bold} input,select{width:100%;padding:10px;margin-top:5px;border:1px solid #aebdca;border-radius:7px;font-size:16px;background:white}
+.result{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{background:var(--light);padding:12px;border-radius:9px}.metric small{display:block;color:#526776}.metric strong{font-size:23px;color:var(--navy)}
+.note{font-size:12px;color:#536471;line-height:1.45}.status{padding:10px;border-radius:8px;font-weight:bold;margin-top:10px}.ok{background:var(--ok)}.warn{background:var(--warn)}.bad{background:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid #c9d7e1;padding:7px;text-align:center}th{background:var(--light);color:var(--navy)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}button{border:0;border-radius:8px;padding:10px 14px;background:var(--blue);color:white;font-weight:bold;cursor:pointer}.secondary{background:#667783}
+.full{grid-column:1/-1}.source a{color:#075d9a}
+@media(max-width:760px){.grid,.fields,.result{grid-template-columns:1fr}header h1{font-size:20px}}
+@media print{body{background:white}.actions{display:none}.card{break-inside:avoid}main{max-width:none}}
+</style>
+</head>
+<body>
+<header><h1>ROMAIN LTDA. · Calculador de Tensión de Correas</h1><p>Fuerza–deflexión + estimación de frecuencia natural (Hz) · uso en terreno</p></header>
+<main><div class="grid">
+<section class="card"><h2>1. Datos de la transmisión</h2><div class="fields">
+<label>Perfil de correa<select id="profile"></select></label><label>Longitud nominal (mm)<input id="beltLength" type="number" value="3750" min="1"></label>
+<label>Polea menor Ø (mm)<input id="dSmall" type="number" value="265" min="1"></label><label>Polea mayor Ø (mm)<input id="dLarge" type="number" value="600" min="1"></label>
+<label>RPM polea menor<input id="rpm" type="number" value="1480" min="1"></label><label>Cantidad de correas<input id="qty" type="number" value="8" min="1"></label>
+<label>Span medido (mm)<input id="span" type="number" value="1400" min="1"></label><label>Estado<select id="condition"><option value="used">En servicio / usada</option><option value="new">Nueva / instalación</option></select></label>
+</div><div class="actions"><button id="calc">Calcular</button><button class="secondary" id="print">Imprimir / PDF</button></div></section>
+<section class="card"><h2>2. Resultado</h2><div class="result">
+<div class="metric"><small>Deflexión Span / 64</small><strong id="defl">—</strong></div><div class="metric"><small>Velocidad de correa</small><strong id="speed">—</strong></div>
+<div class="metric"><small>RPM polea mayor</small><strong id="rpmLarge">—</strong></div><div class="metric"><small>Fuerza de referencia / correa</small><strong id="force">—</strong></div>
+<div class="metric"><small>Equivalente</small><strong id="forceLb">—</strong></div><div class="metric"><small>Hz estimados</small><strong id="hz">—</strong></div></div>
+<div id="status" class="status warn">Ingresa los datos y presiona Calcular.</div>
+<p class="note"><b>Importante:</b> los valores de fuerza de la base incorporada son referencias preliminares y deben validarse contra la tabla vigente del fabricante o la especificación de ingeniería de cada transmisión. Los Hz son una estimación física y no sustituyen un valor sónico específico del fabricante.</p></section>
+<section class="card"><h2>3. Datos del perfil seleccionado</h2><table><tr><th>Perfil</th><th>Ancho</th><th>Alto</th><th>Masa lineal</th><th>Ø mín. ref.</th></tr><tr><td id="pName">—</td><td id="pWidth">—</td><td id="pHeight">—</td><td id="pMass">—</td><td id="pMinD">—</td></tr></table><p class="note">Dimensiones y masas de referencia. Verifica la familia y construcción exacta de la correa instalada.</p></section>
+<section class="card"><h2>4. Medición individual</h2><table id="measureTable"><thead><tr><th>Correa</th><th>kgf medido</th><th>lb</th><th>Estado</th></tr></thead><tbody></tbody></table><p class="note">Ingresa la lectura del comprobador para cada correa. El estado se compara con el rango de referencia mostrado.</p></section>
+<section class="card full"><h2>5. Base de datos incorporada</h2><div style="overflow:auto"><table id="dbTable"></table></div><p class="note">Perfiles incorporados: SPZ/3V, SPA, SPB/5V, SPC y 8V. No se extrapolan valores fuera de los rangos incorporados.</p></section>
+<section class="card full source"><h2>6. Fuentes técnicas y criterio de cálculo</h2><p class="note"><b>Referencias:</b> documentación técnica Gates y Optibelt. Confirma siempre edición, perfil, construcción y criterio de tensión aplicable a tu equipo.<br><a href="https://www.gatesaustralia.com.au/~/media/files/gates-au/industrial/brochures-and-marketing-collateral/tension-card--vbelt-drives-aus--nz-june-2013.pdf">Documento Gates</a><br><a href="https://www.optibelt.com/fileadmin/pdf/produkte/keilriemen/optibelt-RED-POWER-3-Product-range.pdf">Ficha Optibelt</a> · <a href="https://www.optibelt.com/fileadmin/pdf/produkte/keilriemen/Optibelt-TM-v-belt-drives.pdf">Manual técnico Optibelt</a></p>
+<p class="note"><b>Fórmulas:</b> deflexión = Span/64. Velocidad = π·d·RPM/60. Para estimar Hz se usa T≈F·L/(4δ); con δ=L/64, T≈16F; luego f≈(1/(2L))√(T/μ). La aproximación no contempla rigidez flexional, geometría de garganta ni construcción específica.</p></section>
+</div></main>
+<script>
+const DB={"SPZ / 3V":{w:10,h:8,m:.074,minD:63,r:[[71,100,1.3,1.4],[106,150,1.6,1.7],[160,200,1.7,1.8],[224,355,1.9,2],[400,630,2.1,2.3]]},"SPA":{w:13,h:10,m:.123,minD:90,r:[[100,140,2,2.1],[150,190,2.4,2.5],[200,250,2.6,2.8],[265,355,2.9,3.1],[400,630,3.3,3.6]]},"SPB / 5V":{w:16,h:13,m:.195,minD:140,r:[[160,190,2.9,3.2],[200,250,3.6,3.8],[280,355,4.2,4.5],[400,630,5,5.4]]},"SPC":{w:22,h:18,m:.377,minD:224,r:[[250,300,5.4,5.8],[315,400,6.6,7.1],[425,500,7.3,7.9],[530,630,8.2,8.9]]},"8V":{w:25,h:23,m:.575,minD:315,r:[[315,350,7.1,7.6],[400,450,8.8,9.5],[500,600,10.7,11.6]]}};
+const $=id=>document.getElementById(id),profile=$("profile");Object.keys(DB).forEach(k=>profile.add(new Option(k,k)));profile.value="SPC";let currentRange=null;
+function fmt(x,d=1){return Number.isFinite(x)?x.toLocaleString("es-CL",{minimumFractionDigits:d,maximumFractionDigits:d}):"—"}
+function profileInfo(){const p=DB[profile.value];$("pName").textContent=profile.value;$("pWidth").textContent=p.w+" mm";$("pHeight").textContent=p.h+" mm";$("pMass").textContent=p.m+" kg/m";$("pMinD").textContent=p.minD+" mm"}
+function getRange(p,d){return p.r.find(x=>d>=x[0]&&d<=x[1])||null}
+function calc(){const p=DB[profile.value],d=+$("dSmall").value,D=+$("dLarge").value,rpm=+$("rpm").value,Lmm=+$("span").value;if(!(d>0&&D>0&&rpm>0&&Lmm>0)){$("status").className="status bad";$("status").textContent="Revisa los datos: diámetros, RPM y Span deben ser mayores que cero.";return}const L=Lmm/1000,delta=Lmm/64,v=Math.PI*(d/1000)*rpm/60,rpm2=rpm*d/D,range=getRange(p,d);$("defl").textContent=fmt(delta,1)+" mm";$("speed").textContent=fmt(v,1)+" m/s";$("rpmLarge").textContent=fmt(rpm2,0)+" rpm";currentRange=range;if(range){const lo=range[2],hi=range[3];$("force").textContent=fmt(lo,1)+"–"+fmt(hi,1)+" kgf";$("forceLb").textContent=fmt(lo*2.20462,1)+"–"+fmt(hi*2.20462,1)+" lb";const favg=(lo+hi)/2*9.80665,T=16*favg,hz=(1/(2*L))*Math.sqrt(T/p.m);$("hz").textContent="≈ "+fmt(hz,1)+" Hz";$("status").className="status ok";$("status").textContent="Rango de referencia encontrado para Ø "+d+" mm. Valídalo contra la especificación vigente del fabricante/equipo."}else{$("force").textContent="Sin rango";$("forceLb").textContent="—";$("hz").textContent="—";$("status").className="status warn";$("status").textContent="El diámetro no cae en un rango incorporado para "+profile.value+". Verifica la tabla del fabricante; no se extrapola."}buildRows();profileInfo()}
+function buildRows(){const n=Math.max(1,Math.min(30,+$("qty").value||1)),tb=$("measureTable").querySelector("tbody");tb.innerHTML="";for(let i=1;i<=n;i++){let tr=document.createElement("tr");tr.innerHTML=`<td>${i}</td><td><input aria-label="kgf correa ${i}" type="number" min="0" step="0.1" style="padding:5px"></td><td>—</td><td>—</td>`;let inp=tr.querySelector("input");inp.addEventListener("input",()=>{let x=+inp.value,td=tr.children;if(!inp.value){td[2].textContent="—";td[3].textContent="—";return}td[2].textContent=fmt(x*2.20462,1);if(currentRange){let lo=currentRange[2],hi=currentRange[3];td[3].textContent=x<lo?"BAJA":x>hi?"ALTA":"OK";td[3].style.fontWeight="bold"}else td[3].textContent="Sin referencia"});tb.appendChild(tr)}}
+function dbTable(){let s="<tr><th>Perfil</th><th>Ø polea menor (mm)</th><th>Fuerza mín. kgf</th><th>Fuerza máx. kgf</th></tr>";Object.entries(DB).forEach(([k,p])=>p.r.forEach(r=>s+=`<tr><td>${k}</td><td>${r[0]}–${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`));$("dbTable").innerHTML=s}
+$("calc").addEventListener("click",calc);$("print").addEventListener("click",()=>window.print());profile.addEventListener("change",calc);$("qty").addEventListener("change",buildRows);$("condition").addEventListener("change",calc);dbTable();profileInfo();calc();
+</script></body></html>
