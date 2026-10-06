@@ -34,7 +34,7 @@ body{background:white}.actions,header,main>.grid>.card{display:none!important}
 <div class="fields">
 <label>Fabricante<select id="brand"><option value="SKF">SKF</option><option value="OPTIBELT">Optibelt</option><option value="CBB">CBB · Tensiómetro manual</option></select></label>
 <label id="familyWrap">Familia Optibelt<select id="family"><option value="SK">SK / VB</option><option value="RP3">RED POWER 3</option></select></label>
-<label>Perfil de correa<select id="profile"></select></label><label id="cbbBeltBrandWrap" style="display:none">Marca de la correa<select id="cbbBeltBrand"><option value="OPTIBELT">Optibelt</option><option value="SKF">SKF</option><option value="OTHER">Otra / desconocida</option></select></label><label>Longitud nominal (mm)<input id="beltLength" type="number" value="3750" min="1"></label>
+<label>Perfil de correa<select id="profile"></select></label><label>Longitud nominal (mm)<input id="beltLength" type="number" value="3750" min="1"></label>
 <label>Polea menor Ø (mm)<input id="dSmall" type="number" value="265" min="1"></label><label>Polea mayor Ø (mm)<input id="dLarge" type="number" value="600" min="1"></label>
 <label>RPM polea menor<input id="rpm" type="number" value="1480" min="1"></label><label>Cantidad de correas<input id="qty" type="number" value="8" min="1"></label>
 <label>Span medido (mm)<input id="span" type="number" value="1400" min="1"></label><label>Estado<select id="condition"><option value="used">Rodada / en servicio</option><option value="new">Nueva / instalación</option></select></label>
@@ -50,7 +50,9 @@ body{background:white}.actions,header,main>.grid>.card{display:none!important}
 </div><div id="status" class="status warn">Ingresa los datos y presiona Calcular.</div>
 <p class="note"><b>Importante:</b> “tensión estática” (N) y “fuerza de deflexión” (kgf/lbf aplicada con un comprobador mecánico) no son la misma magnitud. La fuerza de deflexión mostrada aquí es solo una aproximación física y no reemplaza una tabla específica del instrumento/fabricante.</p></section>
 
-<section class="card"><h2>3. Datos del perfil</h2><table><tr><th>Marca</th><th>Perfil</th><th>Masa lineal</th><th>Ø mín. ref.</th></tr><tr><td id="pBrand">—</td><td id="pName">—</td><td id="pMass">—</td><td id="pMinD">—</td></tr></table>
+<section class="card"><h2>3. Datos del perfil</h2>
+<div id="cbbBeltBrandWrap" style="display:none;margin-bottom:12px"><label>Marca de la correa<select id="cbbBeltBrand"><option value="OPTIBELT">Optibelt</option><option value="SKF">SKF</option><option value="OTHER">Otra / desconocida</option></select></label></div>
+<table><tr><th>Marca</th><th>Perfil</th><th>Masa lineal</th><th>Ø mín. ref.</th></tr><tr><td id="pBrand">—</td><td id="pName">—</td><td id="pMass">—</td><td id="pMinD">—</td></tr></table>
 <p class="note" id="profileNote"></p></section>
 
 <section class="card"><h2>4. Comprobación individual de correas</h2>
