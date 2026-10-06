@@ -38,7 +38,7 @@ body{background:white}.actions,header,main>.grid>.card{display:none!important}
 <label>Polea menor Ø (mm)<input id="dSmall" type="number" value="265" min="1"></label><label>Polea mayor Ø (mm)<input id="dLarge" type="number" value="600" min="1"></label>
 <label>RPM polea menor<input id="rpm" type="number" value="1480" min="1"></label><label>Cantidad de correas<input id="qty" type="number" value="8" min="1"></label>
 <label>Span medido (mm)<input id="span" type="number" value="1400" min="1"></label><label>Estado<select id="condition"><option value="used">Rodada / en servicio</option><option value="new">Nueva / instalación</option></select></label>
-</div><div class="actions"><button id="calc">Calcular</button><button class="secondary" id="print">Generar informe / PDF</button></div></section>
+</div><div class="actions"><button id="calc">Calcular</button></div></section>
 
 <section class="card"><h2>2. Resultado · <span id="brandTag" class="brandtag">SKF</span></h2><div class="result">
 <div class="metric"><small>Deflexión de ensayo</small><strong id="defl">—</strong><em>D = Span / 64</em></div>
@@ -137,5 +137,5 @@ $("report").innerHTML='<div class="rhead"><div><h1>ROMAIN LTDA.</h1><b>INFORME D
 '<p><b>Resumen:</b> '+measured.length+' mediciones registradas · OK: '+ok+' · Baja: '+low+' · Alta: '+high+'.</p>'+
 '<h2>5. Observaciones y conformidad</h2><div class="box" style="min-height:55px"><small>Observaciones</small><span>'+obs.replace(/\n/g,"<br>")+'</span></div><div class="sign"><div>Ejecutor / Mantenedor</div><div>Supervisor / Responsable</div></div><p style="margin-top:25px;font-size:10px;color:#60717e;text-align:center">ROMAIN LTDA. · Informe generado desde Calculador de Tensión de Correas</p>';
 setTimeout(()=>window.print(),150)}
-$("calc").addEventListener("click",calc);$("print").addEventListener("click",generateReport);$("brand").addEventListener("change",profiles);["family","profile","condition","cbbBeltBrand"].forEach(id=>$(id).addEventListener("change",calc));["dSmall","dLarge","rpm","span","qty"].forEach(id=>$(id).addEventListener("change",calc));profiles();calc();
+$("calc").addEventListener("click",calc);$("brand").addEventListener("change",profiles);["family","profile","condition","cbbBeltBrand"].forEach(id=>$(id).addEventListener("change",calc));["dSmall","dLarge","rpm","span","qty"].forEach(id=>$(id).addEventListener("change",calc));profiles();calc();
 </script></body></html>
