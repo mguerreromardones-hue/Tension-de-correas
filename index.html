@@ -32,8 +32,8 @@ body{background:white}.actions,header,main>.grid>.card{display:none!important}
 <label>Responsable<input id="responsible" type="text" placeholder="Nombre responsable"></label>
 </div><label>Observaciones<textarea id="observations" rows="3" placeholder="Ingrese observaciones del control..." style="width:100%;padding:10px;margin:5px 0 14px;border:1px solid #aebdca;border-radius:7px;font:inherit;resize:vertical"></textarea></label>
 <div class="fields">
-<label>Fabricante<select id="brand"><option value="SKF">SKF</option><option value="OPTIBELT">Optibelt</option><option value="CBB">CBB · Tensiómetro manual</option></select></label>
-<label id="familyWrap">Familia Optibelt<select id="family"><option value="SK">SK / VB</option><option value="RP3">RED POWER 3</option></select></label>
+<label>Fabricante<select id="brand" onchange="toggleManufacturerFields()"><option value="SKF">SKF</option><option value="OPTIBELT">Optibelt</option><option value="CBB">CBB · Tensiómetro manual</option></select></label>
+<label id="familyWrap" style="display:none">Familia Optibelt<select id="family"><option value="SK">SK / VB</option><option value="RP3">RED POWER 3</option></select></label>
 <label>Perfil de correa<select id="profile"></select></label><label>Longitud nominal (mm)<input id="beltLength" type="number" value="3750" min="1"></label>
 <label>Polea menor Ø (mm)<input id="dSmall" type="number" value="265" min="1"></label><label>Polea mayor Ø (mm)<input id="dLarge" type="number" value="600" min="1"></label>
 <label>RPM polea menor<input id="rpm" type="number" value="1480" min="1"></label><label>Cantidad de correas<input id="qty" type="number" value="8" min="1"></label>
@@ -104,7 +104,8 @@ const CBB={
 };
 const $=id=>document.getElementById(id);let targetN=null,currentMass=null,currentCBB=null;
 function fmt(x,d=1){return Number.isFinite(x)?x.toLocaleString("es-CL",{minimumFractionDigits:d,maximumFractionDigits:d}):"—"}
-function profiles(){const b=$("brand").value,keys=b==="SKF"?Object.keys(SKF):(b==="CBB"?Object.keys(CBB):Object.keys(OPT_MASS)),old=$("profile").value;$("profile").innerHTML="";keys.forEach(k=>$("profile").add(new Option(k,k)));$("profile").value=keys.includes(old)?old:(keys.includes("SPC")?"SPC":keys[0]);$("familyWrap").style.display=b==="OPTIBELT"?"block":"none";$("cbbBeltBrandWrap").style.display=b==="CBB"?"block":"none";calc()}
+function toggleManufacturerFields(){const b=$("brand").value;$("familyWrap").style.setProperty("display",b==="OPTIBELT"?"block":"none","important");$("cbbBeltBrandWrap").style.setProperty("display",b==="CBB"?"block":"none","important");}
+function profiles(){const b=$("brand").value,keys=b==="SKF"?Object.keys(SKF):(b==="CBB"?Object.keys(CBB):Object.keys(OPT_MASS)),old=$("profile").value;$("profile").innerHTML="";keys.forEach(k=>$("profile").add(new Option(k,k)));$("profile").value=keys.includes(old)?old:(keys.includes("SPC")?"SPC":keys[0]);toggleManufacturerFields();calc()}
 function getTarget(){
  const b=$("brand").value,p=$("profile").value,d=+$("dSmall").value,rpm=+$("rpm").value,cond=$("condition").value;
  if(b==="SKF"){const q=SKF[p];const row=q.r.find(x=>d>=x[0]&&d<=x[1]&&rpm>=x[2]&&rpm<=x[3]);if(!row)return null;return {N:cond==="new"?row[4]:row[5],m:q.m,minD:q.minD,row};}
@@ -136,5 +137,5 @@ $("report").innerHTML='<div class="rhead"><div><h1>ROMAIN LTDA.</h1><b>INFORME D
 '<p><b>Resumen:</b> '+measured.length+' mediciones registradas · OK: '+ok+' · Baja: '+low+' · Alta: '+high+'.</p>'+
 '<h2>5. Observaciones y conformidad</h2><div class="box" style="min-height:55px"><small>Observaciones</small><span>'+obs.replace(/\n/g,"<br>")+'</span></div><div class="sign"><div>Ejecutor / Mantenedor</div><div>Supervisor / Responsable</div></div><p style="margin-top:25px;font-size:10px;color:#60717e;text-align:center">ROMAIN LTDA. · Informe generado desde Calculador de Tensión de Correas</p>';
 setTimeout(()=>window.print(),150)}
-$("calc").addEventListener("click",calc);$("print").addEventListener("click",generateReport);$("brand").addEventListener("change",profiles);["family","profile","condition","cbbBeltBrand"].forEach(id=>$(id).addEventListener("change",calc));["dSmall","dLarge","rpm","span","qty"].forEach(id=>$(id).addEventListener("change",calc));profiles();$("profile").value="SPC";calc();
+$("calc").addEventListener("click",calc);$("print").addEventListener("click",generateReport);$("brand").addEventListener("change",()=>{toggleManufacturerFields();profiles()});["family","profile","condition","cbbBeltBrand"].forEach(id=>$(id).addEventListener("change",calc));["dSmall","dLarge","rpm","span","qty"].forEach(id=>$(id).addEventListener("change",calc));toggleManufacturerFields();profiles();$("profile").value="SPC";calc();
 </script></body></html>
